@@ -1,0 +1,26 @@
+version: "3"
+
+networks:
+  laravel:
+  host:
+
+services:
+  nginx:
+    image: nginx
+    container_name: cropbytes-nginx
+    volumes:
+      - ./:/var/www/html
+      - ./server_dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel
+      - host
+
+  php:
+    build:
+      context: .
+      dockerfile: server_dev/Dockerfile
+    container_name: cropbytes-php
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - laravel
