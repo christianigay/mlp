@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+
+    protected $FrontOfficeApi = "App\Http\Controllers\Frontoffice";
+
     /**
      * The path to the "home" route for your application.
      *
@@ -38,6 +41,13 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            foreach(glob(base_path("routes/frontoffice/*.php")) as $file){
+                Route::prefix('api/frontoffice/')
+                    ->namespace($this->FrontOfficeApi)
+                    ->middleware('api')
+                    ->group($file);
+            }
+
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)

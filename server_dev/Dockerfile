@@ -1,19 +1,27 @@
-FROM php:7.3.19-fpm-stretch
+FROM php:7.4-fpm-alpine
 
 WORKDIR /var/www/html
 
-RUN docker-php-ext-install pdo pdo_mysql
-RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
-RUN docker-php-ext-configure intl
-RUN docker-php-ext-install intl
+# Setup GD extension
+RUN apk add --no-cache \
+      freetype \
+      libjpeg-turbo \
+      libpng \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
+    && docker-php-ext-configure gd \
+      --with-freetype=/usr/include/ \
+      # --with-png=/usr/include/ \ # No longer necessary as of 7.4; https://github.com/docker-library/php/pull/910#issuecomment-559383597
+      --with-jpeg=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-enable gd \
+    && apk del --no-cache \
+      freetype-dev \
+      libjpeg-turbo-dev \
+      libpng-dev \
+    && rm -rf /tmp/*
 
-RUN apt-get update && \
-    apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
-    docker-php-ext-install gd
+RUN apk add libzip-dev
 
-RUN apt-get install -y \
-        libzip-dev \
-        zip \
-  && docker-php-ext-install zip
-RUN apt-get install poppler-utils -y
+RUN docker-php-ext-install pdo pdo_mysql zip bcmath
