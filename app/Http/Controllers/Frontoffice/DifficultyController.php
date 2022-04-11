@@ -165,4 +165,17 @@ class DifficultyController extends Controller {
         $lines = Utils::removeEmptyLines($lines);
         return $lines;
     }
+
+    public function moveFiles()
+    {
+        $files = ['extracts.pdf', 'weeks.pdf'];
+        foreach($files as $file){
+            $fullPath = getcwd() . '/difficulty/'.$file;
+            $new = storage_path($this->weeksPDFPath).$file;
+            if(file_exists($fullPath)){
+                dump($new);
+                dump(rename($fullPath, $new));
+            }
+        }
+    }
 }
