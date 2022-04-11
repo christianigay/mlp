@@ -10,6 +10,7 @@ use App\Helpers\Response;
 class DifficultyController extends Controller {
 
     public $weeksPDFPath = 'app/public/difficulty/';
+    protected $poppler;
     protected $weeks = [];
     protected $powers = [];
     protected $feathers = [];
@@ -21,6 +22,12 @@ class DifficultyController extends Controller {
     protected $eggs = [];
     protected $assets = [];
 
+    public function __construct()
+    {
+        $this->poppler = env('APP_ENV') == 'production' 
+            ? '/app/bin/pdftotext' : '/usr/bin/pdftotext';
+    }
+
     public function difficultyData()
     {
         $this->pdfExtractWeeks();
@@ -31,7 +38,7 @@ class DifficultyController extends Controller {
         // $fullPath = storage_path($this->weeksPDFPath . 'extracts.pdf');
         $fullPath = getcwd() . '/difficulty/'. 'extracts.pdf';
         if(file_exists($fullPath)){
-            $result = (new Pdf())->setPdf($fullPath)->text();
+            $result = (new Pdf($this->poppler))->setPdf($fullPath)->text();
             $contents = $this->getLines($result);
             $this->extractAssets($contents);
             $this->restructureAssets();
@@ -115,7 +122,8 @@ class DifficultyController extends Controller {
         // $fullPath = storage_path($this->weeksPDFPath . 'weeks.pdf');
         $fullPath = getcwd() . '/difficulty/'. 'weeks.pdf';
         if(file_exists($fullPath)){
-            $result = (new Pdf())->setPdf($fullPath)->text();
+            
+            $result = (new Pdf($this->poppler))->setPdf($fullPath)->text();
             $contents = $this->getLines($result);
             $removeIndexes = [
                 0,1,2,3,4,5,6,7,8, 
