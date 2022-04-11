@@ -29,7 +29,7 @@ class DifficultyController extends Controller {
     public function pdfExtractAssets()
     {
         // $fullPath = storage_path($this->weeksPDFPath . 'extracts.pdf');
-        $fullPath = getcwd() . '/difficulty/'. 'extracts.pdf');
+        $fullPath = getcwd() . '/difficulty/'. 'extracts.pdf';
         if(file_exists($fullPath)){
             $result = (new Pdf())->setPdf($fullPath)->text();
             $contents = $this->getLines($result);
@@ -113,7 +113,7 @@ class DifficultyController extends Controller {
     {
         $data = [];
         // $fullPath = storage_path($this->weeksPDFPath . 'weeks.pdf');
-        $fullPath = getcwd() . '/difficulty/'. 'weeks.pdf');
+        $fullPath = getcwd() . '/difficulty/'. 'weeks.pdf';
         if(file_exists($fullPath)){
             $result = (new Pdf())->setPdf($fullPath)->text();
             $contents = $this->getLines($result);
