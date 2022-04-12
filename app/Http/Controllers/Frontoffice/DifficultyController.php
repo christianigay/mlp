@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\PdfToText\Pdf;
 use App\Helpers\Utilities as Utils;
+use App\Helpers\FileHelper;
 use App\Helpers\Response;
 
 class DifficultyController extends Controller {
@@ -21,16 +22,36 @@ class DifficultyController extends Controller {
     protected $wools = [];
     protected $eggs = [];
     protected $assets = [];
+    protected $weeksData = [];
 
     public function __construct()
     {
         $this->poppler = env('APP_ENV') == 'production' 
             ? '/app/bin/pdftotext' : '/usr/bin/pdftotext';
+        $this->FileHelper = new FileHelper;
+    }
+
+    public function getDifficultyData()
+    {
+        $fullPath = getcwd() . '/difficulty/';
+        $file = 'week.txt';
+        $log = $this->FileHelper->readFile($fullPath, $file);
+        Response::responseJSON(json_decode($log[0]));
+    }
+
+    public function getPdfExtractAssets()
+    {
+        $fullPath = getcwd() . '/difficulty/';
+        $file = 'assets.txt';
+        $log = $this->FileHelper->readFile($fullPath, $file);
+        Response::responseJSON(json_decode($log[0]));
     }
 
     public function difficultyData()
     {
         $this->pdfExtractWeeks();
+        $fullPath = getcwd() . '/difficulty/';
+        $this->FileHelper->writeFile($fullPath, 'week.txt', json_encode($this->weeksData));
     }
 
     public function pdfExtractAssets()
@@ -43,7 +64,9 @@ class DifficultyController extends Controller {
             $this->extractAssets($contents);
             $this->restructureAssets();
         }
-        Response::responseJSON($this->assets);
+        $fullPath = getcwd() . '/difficulty/';
+        $this->FileHelper->writeFile($fullPath, 'assets.txt', json_encode($this->assets));
+        // Response::responseJSON($this->assets);
     }
 
     public function restructureAssets()
@@ -133,7 +156,8 @@ class DifficultyController extends Controller {
             $contents = $this->removeLines($contents, $removeIndexes);
             $data = $this->restructureData($contents);
         }
-        Response::responseJSON($data);
+        $this->weeksData = $data;
+        // Response::responseJSON($data);
     }
 
     public function restructureData($contents)
