@@ -7,6 +7,7 @@ use Spatie\PdfToText\Pdf;
 use App\Helpers\Utilities as Utils;
 use App\Helpers\FileHelper;
 use App\Helpers\Response;
+use Illuminate\Http\Response as LaraResponse;
 
 class DifficultyController extends Controller {
 
@@ -36,7 +37,7 @@ class DifficultyController extends Controller {
         $fullPath = getcwd() . '/difficulty/';
         $file = 'week.txt';
         $log = $this->FileHelper->readFile($fullPath, $file);
-        Response::responseJSON(json_decode($log[0]));
+        return $this->sendResponse($log);
     }
 
     public function getPdfExtractAssets()
@@ -44,7 +45,12 @@ class DifficultyController extends Controller {
         $fullPath = getcwd() . '/difficulty/';
         $file = 'assets.txt';
         $log = $this->FileHelper->readFile($fullPath, $file);
-        Response::responseJSON(json_decode($log[0]));
+        return $this->sendResponse($log);
+    }
+
+    private function sendResponse($data)
+    {
+        return response(isset($data[0]) ? json_decode($data[0]) : [], 200);
     }
 
     public function difficultyData()
