@@ -1,4 +1,8 @@
 <?php
+$origin = [];
+if( env('APP_ENV') == 'production'){
+    $origin = ['*'];
+}
 
 return [
 
@@ -19,7 +23,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => $origin,
 
     'allowed_origins_patterns' => [],
 
