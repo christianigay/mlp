@@ -1,4 +1,8 @@
 <?php
+$origin = [];
+if( env('APP_ENV') == 'production'){
+    $origin = ['*'];
+}
 
 return [
 
@@ -15,7 +19,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*'],
 
     'allowed_methods' => ['*'],
 
