@@ -7,9 +7,9 @@ networks:
 services:
   nginx:
     image: nginx
-    container_name: cropbytes-nginx
+    container_name: mlp-nginx
     ports:
-    - "8191:80"
+    - "8192:80"
     volumes:
       - ./:/var/www/html
       - ./server_dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: server_dev/Dockerfile
-    container_name: cropbytes-php
+    container_name: mlp-php
     volumes:
       - ./:/var/www/html
     networks:
